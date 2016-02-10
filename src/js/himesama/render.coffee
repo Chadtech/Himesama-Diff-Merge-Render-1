@@ -16,6 +16,7 @@ hk = 'himesama-id'
 module.exports = Render = 
   node: (model, draft) ->
     id       = model.attributes[hk]
+    # console.log id, model, draft
     el       = getByAttribute hk, id
     nEl      = HTMLify.Single draft
     children = _.toArray el.children

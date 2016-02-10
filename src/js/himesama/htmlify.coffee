@@ -11,19 +11,21 @@ styleString = require './style-string.coffee'
   querySelector } = require './doc'
 
 
-module.exports = HTMLify = (vo) ->
+module.exports = htmlify = (vo) ->
   if vo.type is 'custom'
     vo = vo.children[0]
 
   _.reduce vo.children, 
     (el, child) =>
-      child = HTMLify child
+      child = htmlify child
       el.appendChild child
       el
     Single vo
 
+
 module.exports.Text = Text = 
   (vo) -> createTextNode vo.content
+
 
 module.exports.Single = Single = (vo) ->
   return Text vo if vo.type is 'himesama-text'

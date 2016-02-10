@@ -1,6 +1,6 @@
 # Dependencies
 _          = require 'lodash'
-{ Render, HTMLify } = require './render'
+{ Render, htmlify } = require './render'
 
 DOMCreate = (type) ->
   ->
@@ -64,7 +64,7 @@ Himesama =
   Render: (root, mountPoint) ->
     @VirtualDOM = root.render()
     @mountPoint = mountPoint
-    html = HTMLify.entireTree @VirtualDOM
+    html = htmlify.entireTree @VirtualDOM
     mountPoint.appendChild html
 
 

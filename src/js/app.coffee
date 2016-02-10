@@ -1,41 +1,38 @@
 # Dependencies 
-_         = require 'lodash'
-Himesama  = require './himesama'
-{ Merge } = Himesama
-{ Render } = Himesama
+_           = require 'lodash'
+Himesama    = require './himesama'
+{ Render }  = Himesama
 
 { div, p } = Himesama.DOM
 
-# App =
-#   div id: 'not A!',
-#     div id: 'Not B!',
-#       p 
-#         className: 'point'
-#         'dank memes'
 
-# Update =
-#   div id: 'A',
-#     div id: 'B',
-#       p 
-#         id: 'hell ye'
-#         className: 'point'
-#         'so dank'
-#       p
-#         className: 'point'
-#         'yeeee'
-#       p
-#         className: 'point'
-#         'dank'
+Himesama.initState 
+  title: 'yeeee'
+
+
+yeee = Himesama.createClass
+
+  needs: ['title']
+
+  handle: ->
+    @setState title: 'DOPE'
+
+  render: ->
+    { title } = @state
+
+    div null,
+      p 
+        className: 'point'
+        event:     click: @handle
+        title
 
 
 App = Himesama.createClass
 
   render: ->
 
-    p
-      className: 'point'
-      'Yeeee'
-
+    div null,
+      yeee()
 
 
 mount = document.getElementById 'root'

@@ -1,10 +1,13 @@
 # Dependencies
 _       = require 'lodash'
-HTMLify = require './htmlify'
+htmlify = require './htmlify'
+Merge   = require './merge'
 
 DOMCreate = (type) ->
   ->
     args = _.toArray arguments 
+    args[0] = {} unless args[0]?
+
     _.reduce (_.flatten args.slice 1),
       
       (vo, child, i) ->
@@ -22,9 +25,12 @@ DOMCreate = (type) ->
       attributes:   args[0]
       children:     []
 
-allocateIds = (vdom, id) ->
+allocateIds = (vo, id) ->
+  if vo.type is 'custom'
+    vo = vo.children[0]
+
+  { attributes, children } = vo
   idAttr = 'himesama-id': id
-  { attributes, children } = vdom
   _.extend attributes, idAttr
   _.forEach children, (child, i) =>
     allocateIds child, id + '.' + i
@@ -75,26 +81,50 @@ Himesama =
     keys = _.keys payload
     _.forEach keys, (k) =>
       @state[k] = payload[k]
-    @Rerender keys
+      return
+
+    _.forEach keys, (k) =>
+      @dirtify @vdom, k
+
+    @rerender @vdom
+
     next?()
 
 
-  Diff:  require './diff'
-  Merge: require './merge'
-
   Render: (vdom, mount) ->
     allocateIds vdom, '0'
-    html = HTMLify vdom
+    @vdom  = vdom
+    @mount = mount
+    html   = htmlify @vdom
     mount.appendChild html
 
 
+  dirtify: (node, basis) ->
+    { needs, children } = node
+    if needs? and basis in needs
+      node.dirty = true
+    _.forEach children, (child, ci) =>
+      @dirtify child, basis
+
+
+  rerender: (node) ->
+    { dirty, children } = node
+    if dirty?
+      node.dirty = false
+      draft = node.render()
+      Merge node, draft
+    else
+      _.forEach children,
+        (child) => @rerender child
+
+
 Himesama.initState = Himesama.initState.bind Himesama
-Himesama.Render = Himesama.Render.bind Himesama
+Himesama.Render    = Himesama.Render.bind Himesama
 DOM = (require './dom-elements').split ' '
-Himesama.DOM = _.reduce DOM, 
-  (sum, el) -> 
-    sum[el] = DOMCreate el
-    sum
-  {}
+DOM.unshift {}
+Himesama.DOM = _.reduce DOM, (sum, el) -> 
+  sum[el] = DOMCreate el
+  sum
+
 
 module.exports = Himesama
