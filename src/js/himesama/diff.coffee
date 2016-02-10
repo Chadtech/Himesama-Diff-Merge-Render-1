@@ -4,14 +4,13 @@ styleString = require './style-string.coffee'
 
 VDOMToString = (vo) ->
   keys = _.keys vo.attributes
-  attributes = _.map keys,
-    (k) ->
-      v = vo.attributes[k]
-      v = styleString v if k is 'style'
-      k = 'class' if k is 'className'
+  attributes = _.map keys, (k) ->
+    v = vo.attributes[k]
+    v = styleString v if k is 'style'
+    k = 'class' if k is 'className'
 
-      if k is 'event' then ''
-      else k + '=' + v + ' '
+    if k is 'event' then ''
+    else k + '=' + v + ' '
 
   _.reduce attributes, 
     (sum, attr) -> sum + attr

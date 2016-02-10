@@ -51,7 +51,7 @@ Himesama =
         @dirty  = true
         _.forEach (_.keys payload), (k) =>
           @attributes[k] = payload[k]
-        Himesama.Rerender []
+        Himesama.rerender []
       
       attributes = arguments[0]
       needs      = arguments[1]

@@ -59,12 +59,13 @@ mergeChildren = (model, draft) ->
   s  = max mChildren, dChildren
   ml = mChildren.length
   dl = dChildren.length
-  _.times s - f, (si) =>
-    if ml > dl
+
+  if ml > dl
+    _.times s - f, =>
       mChildren.splice f, 1
       Render.remove model, f
-
-    else
+  else
+    _.times s - f, (si) =>
       dChild = dChildren[ si + f ]
       mChildren.push dChild
       Render.add model, dChild

@@ -2,8 +2,7 @@
 _           = require 'lodash'
 Himesama    = require './himesama'
 { Render }  = Himesama
-
-{ div, p } = Himesama.DOM
+{ div, p }  = Himesama.DOM
 
 
 Himesama.initState 

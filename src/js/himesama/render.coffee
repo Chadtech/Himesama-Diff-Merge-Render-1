@@ -16,17 +16,17 @@ hk = 'himesama-id'
 module.exports = Render = 
   node: (model, draft) ->
     id       = model.attributes[hk]
-    # console.log id, model, draft
     el       = getByAttribute hk, id
-    nEl      = HTMLify.Single draft
     children = _.toArray el.children
-    _.forEach children, (child) ->
-      nEl.appendChild child
+    nEl = _.reduce children, 
+      (nEl, child) ->
+        nEl.appendChild child
+      HTMLify.Single draft
     parent = el.parentNode
     parent.replaceChild nEl, el
 
   nodeToText: (model, draft) ->
-    id     = model.attributes[hk]
+    id     = model.attributes[ hk ]
     el     = getByAttribute hk, id
     nEl    = HTMLify.Text draft.content
     parent = el.parentNode
