@@ -12,10 +12,10 @@ module.exports = Count = Himesama.createClass
     { count } = @state 
 
     div
-      id:          'count div'
-      style:       (display: 'inline')
+      id:             'count div'
+      style:          display: 'inline'
       p 
-        className: 'point', 
-        style:     (display: 'inline')
+        className:    'point', 
+        style:        display: 'inline'
         'Count : ' + count + ', '
 

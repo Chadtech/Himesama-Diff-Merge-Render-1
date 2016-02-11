@@ -3,6 +3,17 @@ _       = require 'lodash'
 htmlify = require './htmlify'
 Merge   = require './merge'
 
+# Utilities
+{ getElementById
+  createTextNode
+  createElement
+  querySelectorAll
+  querySelector
+  getByAttribute } = require './doc'
+
+hk        = 'himesama-id'
+textAreas = [ 'text', 'textarea' ]
+
 DOMCreate = (type) ->
   ->
     args = _.toArray arguments 
@@ -14,6 +25,7 @@ DOMCreate = (type) ->
         if _.isString child
           child = 
             type:       'himesama-text'
+            children:   []
             content:    child
             attributes: {}
         child.parent = vo
@@ -34,6 +46,7 @@ allocateIds = (vo, id) ->
   _.extend attributes, idAttr
   _.forEach children, (child, i) =>
     allocateIds child, id + '.' + i
+
 
 
 Himesama = 
@@ -112,10 +125,29 @@ Himesama =
     if dirty?
       node.dirty = false
       draft = node.render()
+      @saveActiveText()
       Merge node, draft
+      @loadActiveText()
     else
       _.forEach children,
         (child) => @rerender child
+
+
+  saveActiveText: ->
+    el         = document.activeElement
+    @activesId = el.getAttribute hk
+    if el.type in textAreas
+      @textStart = el.selectionStart
+      @textEnd   = el.selectionEnd
+
+
+  loadActiveText: ->
+    el = getByAttribute hk, @activesId
+    if el?
+      el.focus()
+      if el.type in textAreas
+        el.setSelectionRange @textStart, @textEnd
+
 
 
 Himesama.initState = Himesama.initState.bind Himesama

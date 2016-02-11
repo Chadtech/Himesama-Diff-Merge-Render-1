@@ -4,8 +4,7 @@ Diff   = require './diff'
 Render = require './render'
 
 # Utilities
-min = (a, b) -> Math.min a.length, b.length
-max = (a, b) -> Math.max a.length, b.length
+{ min, max } = Math 
 
 eitherAreText = (model, draft) ->
   return true if model.type is 'himesama-text'
@@ -34,6 +33,10 @@ module.exports = Merge = (model, draft) ->
         unless Diff.strings model, draft
           Render.text model, draft
       else
+        i           = model.index
+        parent      = model.parent
+        children    = parent.children
+        children[i] = draft
         Render.textToNode model, draft
   else
     draft = adoptId model, draft
@@ -49,24 +52,26 @@ mergeChildren = (model, draft) ->
   mChildren = model.children
   dChildren = draft.children
 
-  f = min mChildren, dChildren
-  _.times f, (fi) =>
-    mChild = mChildren[fi]
-    dChild = dChildren[fi]
-
-    Merge mChild, dChild
-
-  s  = max mChildren, dChildren
   ml = mChildren.length
   dl = dChildren.length
 
+  f = min ml, dl
+  _.times f, (fi) =>
+    mChild = mChildren[ fi ]
+    dChild = dChildren[ fi ]
+    Merge mChild, dChild
+
+  s  = max ml, dl
   if ml > dl
     _.times s - f, =>
       mChildren.splice f, 1
       Render.remove model, f
   else
     _.times s - f, (si) =>
-      dChild = dChildren[ si + f ]
+      dChild   = dChildren[ si + f ]
+      modelsId = model.attributes[hk]
+      childsId = modelsId + '.' + (si + f)
+      dChild.attributes[hk] = childsId 
       mChildren.push dChild
       Render.add model, dChild
 

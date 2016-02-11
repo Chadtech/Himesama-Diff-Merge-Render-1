@@ -26,6 +26,7 @@ module.exports = Render =
     parent.replaceChild nEl, el
 
   nodeToText: (model, draft) ->
+    console.log 'Node to text'
     id     = model.attributes[ hk ]
     el     = getByAttribute hk, id
     nEl    = HTMLify.Text draft.content
@@ -33,10 +34,11 @@ module.exports = Render =
     parent.replaceChild nEl, el
 
   textToNode: (model, draft) -> 
+    console.log 'Text to node'
     parent = model.parent
     id     = parent.attributes[hk]
     parent = getByAttribute hk, id
-    nEl    = HTMLify.Single draft
+    nEl    = HTMLify draft
     parent.textContent = ''
     parent.appendChild nEl
 
@@ -52,10 +54,13 @@ module.exports = Render =
     el.removeChild el.childNodes[i]
 
   add: (model, child) ->
-    child = HTMLify child
-    id = model.attributes[hk]
-    el = getByAttribute hk, id
-    el.appendChild child
+    if child.type is 'himesama-text'
+      el.textContent = child.content
+    else
+      child = HTMLify child
+      id = model.attributes[hk]
+      el = getByAttribute hk, id
+      el.appendChild child
 
 
 

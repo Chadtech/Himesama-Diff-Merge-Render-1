@@ -1,42 +1,35 @@
-# Dependencies 
-_           = require 'lodash'
-Himesama    = require './himesama'
-{ Render }  = Himesama
-{ div, p }  = Himesama.DOM
+# Dependencies
+_             = require 'lodash'
+Himesama      = require './himesama'
+{ Render }    = Himesama
+{ initState } = Himesama
+{ div, p }    = Himesama.DOM
 
+# Initialize State
+initState 
+  title:      'Himesama yeeee'
+  message:    'yeeee'
+  count:      0
+  listField:  ''
+  words:      []
 
-Himesama.initState 
-  title: 'yeeee'
-
-
-yeee = Himesama.createClass
-
-  needs: ['title']
-
-  handle: ->
-    @setState title: 'DOPE'
-
-  render: ->
-    { title } = @state
-
-    div null,
-      p 
-        className: 'point'
-        event:     click: @handle
-        title
+# Components
+Title   = require './components/title'
+Counter = require './components/counter'
+Count   = require './components/count'
+Field   = require './components/list-field'
+Words   = require './components/words'
 
 
 App = Himesama.createClass
 
-  render: ->
+  render: -> 
+    div null, 
+      Title()
+      Count()
+      Counter()
+      Field()
+      Words()
 
-    div null,
-      yeee()
-
-
-mount = document.getElementById 'root'
-Render App(), mount
-
-
-
+Render App(), document.getElementById 'root'
 
