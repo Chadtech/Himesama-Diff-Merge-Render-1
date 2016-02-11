@@ -24,7 +24,7 @@ module.exports = FieldInput = Himesama.createClass
 
     input 
       className:    'field'
-      style:        (display: 'table')
+      style:        display: 'table'
       placeholder:  'press enter'
       value:        listField
       event:        

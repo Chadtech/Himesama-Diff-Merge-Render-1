@@ -3,6 +3,7 @@ _      = require 'lodash'
 Diff   = require './diff'
 Render = require './render'
 
+
 # Utilities
 { min, max } = Math 
 
@@ -20,6 +21,13 @@ handleCustom = (vo) ->
   return vo.children[0] if vo.type is 'custom'
   vo
 
+replaceNode = (model, draft) ->
+  i           = model.index
+  parent      = model.parent
+  children    = parent.children
+  children[i] = draft
+
+
 module.exports = Merge = (model, draft) ->
 
   model = handleCustom model
@@ -27,16 +35,15 @@ module.exports = Merge = (model, draft) ->
 
   if eitherAreText model, draft
     if model.type isnt 'himesama-text'
+      replaceNode model, draft
       Render.nodeToText model, draft
     else
       if draft.type is 'himesama-text'
         unless Diff.strings model, draft
+          model.content = draft.content
           Render.text model, draft
       else
-        i           = model.index
-        parent      = model.parent
-        children    = parent.children
-        children[i] = draft
+        replaceNode model, draft
         Render.textToNode model, draft
   else
     draft = adoptId model, draft
@@ -64,8 +71,9 @@ mergeChildren = (model, draft) ->
   s  = max ml, dl
   if ml > dl
     _.times s - f, =>
+      mChild = mChildren[ f ]
+      Render.remove mChild, f
       mChildren.splice f, 1
-      Render.remove model, f
   else
     _.times s - f, (si) =>
       dChild   = dChildren[ si + f ]

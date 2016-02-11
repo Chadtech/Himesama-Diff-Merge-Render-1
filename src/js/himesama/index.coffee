@@ -25,9 +25,9 @@ DOMCreate = (type) ->
         if _.isString child
           child = 
             type:       'himesama-text'
-            children:   []
+            # children:   []
             content:    child
-            attributes: {}
+            # attributes: {}
         child.parent = vo
         child.index  = i
         vo.children.push child
